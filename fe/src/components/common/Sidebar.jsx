@@ -1,0 +1,190 @@
+import React from 'react';
+import {
+  LayoutDashboard,
+  Package,
+  Boxes,
+  FileBarChart,
+  Users,
+  UtensilsCrossed,
+  LogOut,
+} from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { ROLES, PERMISSIONS } from '../../constants/roles';
+
+export function Sidebar({ currentTab = 'overview', onTabChange }) {
+  const { user, role, hasPerm, logout } = useAuth();
+  const isSuperAdmin = role === ROLES.SUPER_ADMIN;
+
+  // Navigation Items
+  const navItems = [
+    {
+      id: 'overview',
+      label: 'Ringkasan & Info Akses',
+      icon: LayoutDashboard,
+      allowed: true, // both admin and super_admin
+    },
+    {
+      id: 'products',
+      label: 'Katalog Produk & Menu',
+      icon: Package,
+      allowed: hasPerm(PERMISSIONS.PRODUCTS_VIEW),
+    },
+    {
+      id: 'inventory',
+      label: 'Inventori Bahan Baku',
+      icon: Boxes,
+      allowed: hasPerm(PERMISSIONS.INVENTORY_VIEW),
+    },
+    {
+      id: 'reports',
+      label: 'Laporan Keuangan',
+      icon: FileBarChart,
+      allowed: hasPerm(PERMISSIONS.REPORTS_VIEW),
+    },
+    // Super Admin EXCLUSIVE item: completely hidden from Admin!
+    {
+      id: 'users',
+      label: 'Kelola Tim & Staf',
+      icon: Users,
+      badge: 'Super Admin',
+      allowed: isSuperAdmin && hasPerm(PERMISSIONS.USERS_MANAGE),
+    },
+  ];
+
+  return (
+    <aside
+      className="w-64 flex flex-col justify-between shrink-0 min-h-screen"
+      style={{
+        background: '#ffffff',
+        borderRight: '1px solid #fed7aa',
+      }}
+    >
+      {/* Top Header Branding */}
+      <div>
+        <div
+          className="p-5"
+          style={{
+            background: 'linear-gradient(135deg, #ea6c00 0%, #f97316 50%, #fb923c 100%)',
+          }}
+        >
+          <div className="flex items-center gap-2.5">
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg"
+              style={{
+                background: 'rgba(255,255,255,0.25)',
+                border: '1.5px solid rgba(255,255,255,0.4)',
+              }}
+            >
+              <UtensilsCrossed className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-bold text-white tracking-tight text-sm">Bite Ledger</span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="mt-4 pt-3"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.25)' }}
+          >
+            <div className="text-xs text-orange-100 mb-1">Masuk sebagai:</div>
+            <span className="text-xs font-semibold text-white truncate">{user?.name}</span>
+          </div>
+        </div>
+
+        {/* Navigation Menu */}
+        <div className="p-3">
+          <div
+            className="text-[10px] font-bold uppercase tracking-wider px-3 py-2"
+            style={{ color: '#f97316' }}
+          >
+            Menu Operasional
+          </div>
+          <nav className="space-y-1">
+            {navItems
+              .filter((item) => item.allowed)
+              .map((item) => {
+                const Icon = item.icon;
+                const isActive = currentTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => onTabChange && onTabChange(item.id)}
+                    className="w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all cursor-pointer"
+                    style={{
+                      background: isActive
+                        ? 'linear-gradient(135deg, #ea6c00, #f97316)'
+                        : 'transparent',
+                      color: isActive ? '#ffffff' : '#6b7280',
+                      boxShadow: isActive ? '0 2px 8px rgba(234, 108, 0, 0.25)' : 'none',
+                      fontWeight: isActive ? '600' : '500',
+                    }}
+                    onMouseEnter={e => {
+                      if (!isActive) {
+                        e.currentTarget.style.background = '#fff7ed';
+                        e.currentTarget.style.color = '#ea580c';
+                      }
+                    }}
+                    onMouseLeave={e => {
+                      if (!isActive) {
+                        e.currentTarget.style.background = 'transparent';
+                        e.currentTarget.style.color = '#6b7280';
+                      }
+                    }}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Icon
+                        className="w-4 h-4"
+                        style={{ color: isActive ? '#ffffff' : '#9ca3af' }}
+                      />
+                      <span>{item.label}</span>
+                    </div>
+                    {item.badge && (
+                      <span
+                        className="text-[9px] font-bold px-1.5 py-0.5 rounded"
+                        style={{
+                          background: '#fff7ed',
+                          color: '#ea580c',
+                          border: '1px solid #fed7aa',
+                        }}
+                      >
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+          </nav>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div
+        className="p-4"
+        style={{ borderTop: '1px solid #fed7aa' }}
+      >
+        <button
+          onClick={logout}
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer"
+          style={{
+            background: '#fff1f2',
+            border: '1.5px solid #fecaca',
+            color: '#dc2626',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = '#fee2e2';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = '#fff1f2';
+          }}
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          <span>Keluar Sesi</span>
+        </button>
+      </div>
+    </aside>
+  );
+}
+
+export default Sidebar;
