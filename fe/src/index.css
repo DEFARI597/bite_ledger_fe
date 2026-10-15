@@ -13,8 +13,8 @@ body {
   font-family: var(--font-sans);
   margin: 0;
   padding: 0;
-  background-color: #090d16;
-  color: #f3f4f6;
+  background-color: #ffffff;
+  color: #111827;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
