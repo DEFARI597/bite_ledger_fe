@@ -7,39 +7,23 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => authService.getCurrentUser());
-  const [token, setToken] = useState(() => authService.getToken());
   const [isLoading, setIsLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
 
   // Initialize and verify session on load
   const verifySession = useCallback(async () => {
-    if (!authService.isAuthenticated()) {
-      setUser(null);
-      setToken(null);
-      setIsLoading(false);
-      return;
-    }
-
     try {
       const response = await authService.getMe();
       if (response?.data) {
-        // Enforce restriction for kitchen role on session recovery
-        if (response.data.role === ROLES.KITCHEN) {
-          authService.logout();
-          setUser(null);
-          setToken(null);
-          setAuthError('Akun Kitchen tidak memiliki akses ke sistem CMS/POS.');
-        } else {
-          setUser(response.data);
-          setToken(authService.getToken());
-          setAuthError(null);
-        }
+        setUser(response.data);
+        setAuthError(null);
+      } else {
+        setUser(null);
       }
     } catch (err) {
       console.warn('Session verification failed, logging out:', err.message);
-      authService.logout();
+      await authService.logout();
       setUser(null);
-      setToken(null);
     } finally {
       setIsLoading(false);
     }
@@ -64,19 +48,7 @@ export function AuthProvider({ children }) {
         throw new Error('Format data login dari server tidak valid');
       }
 
-      // Explicitly reject kitchen role from CMS
-      if (userData.role === ROLES.KITCHEN) {
-        authService.logout();
-        setUser(null);
-        setToken(null);
-        const forbiddenMsg = 'Akses Ditolak: Pengguna dapur (Kitchen) tidak memiliki hak akses ke CMS/POS.';
-        setAuthError(forbiddenMsg);
-        setIsLoading(false);
-        return { success: false, error: forbiddenMsg };
-      }
-
       setUser(userData);
-      setToken(result.data.access_token);
       setIsLoading(false);
       return {
         success: true,
@@ -94,10 +66,9 @@ export function AuthProvider({ children }) {
   /**
    * Logout handler
    */
-  const logout = () => {
-    authService.logout();
+  const logout = async () => {
+    await authService.logout();
     setUser(null);
-    setToken(null);
     setAuthError(null);
   };
 
@@ -111,10 +82,10 @@ export function AuthProvider({ children }) {
 
   const value = {
     user,
-    token,
+    token: null,
     role: user?.role || null,
     permissions: user?.permissions || [],
-    isAuthenticated: !!token && !!user,
+    isAuthenticated: !!user,
     isLoading,
     authError,
     setAuthError,

@@ -6,17 +6,55 @@ import {
   FileBarChart,
   Users,
   UtensilsCrossed,
+  CookingPot,
+  Flame,
+  Clock,
   LogOut,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { ROLES, PERMISSIONS } from '../../constants/roles';
 
-export function Sidebar({ currentTab = 'overview', onTabChange }) {
+export function Sidebar({ currentTab = 'overview', onTabChange, variant }) {
   const { user, role, hasPerm, logout } = useAuth();
   const isSuperAdmin = role === ROLES.SUPER_ADMIN;
+  const isKitchenMode = variant === 'kitchen' || (!variant && role === ROLES.KITCHEN);
 
-  // Navigation Items
-  const navItems = [
+  // Kitchen Navigation Items: Guarded specifically for kitchen operations
+  const kitchenNavItems = [
+    {
+      id: 'queue',
+      label: 'Antrean Pesanan Masak',
+      icon: CookingPot,
+      allowed: true, // Primary kitchen view
+    },
+    {
+      id: 'production',
+      label: 'Status Proses Memasak',
+      icon: Flame,
+      allowed: hasPerm(PERMISSIONS.PRODUCTION_MANAGE) || isKitchenMode,
+    },
+    {
+      id: 'inventory',
+      label: 'Bahan Baku & Dapur',
+      icon: Boxes,
+      allowed: hasPerm(PERMISSIONS.INVENTORY_VIEW) || isKitchenMode,
+    },
+    {
+      id: 'recipes',
+      label: 'Katalog Menu & Resep',
+      icon: Package,
+      allowed: hasPerm(PERMISSIONS.PRODUCTS_VIEW) || isKitchenMode,
+    },
+    {
+      id: 'history',
+      label: 'Riwayat Selesai',
+      icon: Clock,
+      allowed: true,
+    },
+  ];
+
+  // CMS Navigation Items: Dedicated for Admin & Super Admin Backoffice
+  const cmsNavItems = [
     {
       id: 'overview',
       label: 'Ringkasan & Info Akses',
@@ -51,6 +89,9 @@ export function Sidebar({ currentTab = 'overview', onTabChange }) {
     },
   ];
 
+  // Guard: Determine active items according to mode
+  const navItems = isKitchenMode ? kitchenNavItems : cmsNavItems;
+
   return (
     <aside
       className="w-64 flex flex-col justify-between shrink-0 min-h-screen"
@@ -75,11 +116,17 @@ export function Sidebar({ currentTab = 'overview', onTabChange }) {
                 border: '1.5px solid rgba(255,255,255,0.4)',
               }}
             >
-              <UtensilsCrossed className="w-5 h-5 text-white" />
+              {isKitchenMode ? (
+                <CookingPot className="w-5 h-5 text-white" />
+              ) : (
+                <UtensilsCrossed className="w-5 h-5 text-white" />
+              )}
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-white tracking-tight text-sm">Bite Ledger</span>
+                <span className="font-bold text-white tracking-tight text-sm">
+                  {isKitchenMode ? 'Bite Ledger Dapur' : 'Bite Ledger'}
+                </span>
               </div>
             </div>
           </div>
@@ -99,7 +146,7 @@ export function Sidebar({ currentTab = 'overview', onTabChange }) {
             className="text-[10px] font-bold uppercase tracking-wider px-3 py-2"
             style={{ color: '#f97316' }}
           >
-            Menu Operasional
+            {isKitchenMode ? 'Operasional Dapur' : 'Menu Operasional'}
           </div>
           <nav className="space-y-1">
             {navItems

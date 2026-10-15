@@ -11,6 +11,7 @@ import GuestRoute from './components/guards/GuestRoute';
 import LoginPage from './pages/auth/LoginPage';
 import CashierDashboard from './pages/cashier/CashierDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import KitchenDashboard from './pages/kitchen/KitchenDashboard';
 import UnauthorizedPage from './pages/error/UnauthorizedPage';
 import NotFoundPage from './pages/error/NotFoundPage';
 
@@ -35,6 +36,16 @@ export function App() {
             element={
               <ProtectedRoute allowedRoles={[ROLES.CASHIER, ROLES.ADMIN, ROLES.SUPER_ADMIN]}>
                 <CashierDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Operational Kitchen / Production Route: Accessible by Kitchen, Admin, and Super Admin */}
+          <Route
+            path={ROUTES.KITCHEN}
+            element={
+              <ProtectedRoute allowedRoles={[ROLES.KITCHEN, ROLES.ADMIN, ROLES.SUPER_ADMIN]}>
+                <KitchenDashboard />
               </ProtectedRoute>
             }
           />

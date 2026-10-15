@@ -4,7 +4,7 @@ import { ROLES, ROUTES } from '../constants/roles';
  * Determine default landing route after login based on role
  * - Cashier -> '/'
  * - Admin & Super Admin -> '/admin'
- * - Kitchen -> Denied (null)
+ * - Kitchen -> '/kitchen'
  */
 export function getDefaultRouteByRole(role) {
   if (role === ROLES.CASHIER) {
@@ -12,6 +12,9 @@ export function getDefaultRouteByRole(role) {
   }
   if (role === ROLES.ADMIN || role === ROLES.SUPER_ADMIN) {
     return ROUTES.ADMIN;
+  }
+  if (role === ROLES.KITCHEN) {
+    return ROUTES.KITCHEN;
   }
   return null;
 }

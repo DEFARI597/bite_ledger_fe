@@ -32,6 +32,7 @@ class ApiClient {
     }
 
     const config = {
+      credentials: 'include',
       ...options,
       headers,
     };

@@ -22,10 +22,6 @@ export function ProtectedRoute({ allowedRoles, children }) {
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
   }
 
-  if (role === ROLES.KITCHEN) {
-    return <Navigate to={ROUTES.LOGIN} replace />;
-  }
-
   if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(role)) {
     if (role === ROLES.CASHIER) {
       return (
@@ -34,7 +30,22 @@ export function ProtectedRoute({ allowedRoles, children }) {
           state={{
             alert: {
               type: 'error',
-              message: 'Akses Ditolak: Peran Kasir tidak memiliki wewenang untuk membuka Backoffice Admin.',
+              message: 'tidak bisa akses halaman ini',
+            },
+          }}
+          replace
+        />
+      );
+    }
+
+    if (role === ROLES.KITCHEN) {
+      return (
+        <Navigate
+          to={ROUTES.KITCHEN}
+          state={{
+            alert: {
+              type: 'error',
+              message: 'tidak bisa akses halaman ini',
             },
           }}
           replace

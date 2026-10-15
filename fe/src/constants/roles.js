@@ -5,13 +5,6 @@ export const ROLES = {
   KITCHEN: 'kitchen',
 };
 
-export const ROLE_LABELS = {
-  [ROLES.SUPER_ADMIN]: 'Super Administrator',
-  [ROLES.ADMIN]: 'Store Manager',
-  [ROLES.CASHIER]: 'POS Cashier',
-  [ROLES.KITCHEN]: 'Kitchen Staff',
-};
-
 export const PERMISSIONS = {
   USERS_MANAGE: 'users.manage',
   ROLES_MANAGE: 'roles.manage',
@@ -36,5 +29,6 @@ export const ROUTES = {
   LOGIN: '/login',
   CASHIER: '/',
   ADMIN: '/admin',
+  KITCHEN: '/kitchen',
   UNAUTHORIZED: '/unauthorized',
 };
