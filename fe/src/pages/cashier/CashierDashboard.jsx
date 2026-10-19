@@ -1,10 +1,8 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import Navbar from '../../components/common/Navbar';
-import { CreditCard, AlertTriangle } from 'lucide-react';
-
-
+import CashierHeader from '../../components/headers/CashierHeader';
+import { AlertTriangle } from 'lucide-react';
 
 export function CashierDashboard() {
   const { user, role } = useAuth();
@@ -12,8 +10,9 @@ export function CashierDashboard() {
   const redirectAlert = location.state?.alert;
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#ffffff' }}>
-      <Navbar title="Bite Ledger POS" subtitle="Terminal Kasir & Penjualan Restoran" />
+    <div className="min-h-screen flex flex-col bg-white">
+      {/* Top Header tailored for Cashier / POS role */}
+      <CashierHeader />
 
       <main className="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-8 space-y-8">
         {/* Guard Redirect Alert */}

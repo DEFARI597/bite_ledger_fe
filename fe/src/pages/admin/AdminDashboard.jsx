@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { ROLES, ROUTES } from '../../constants/roles';
 import Sidebar from '../../components/common/Sidebar';
+import AdminHeader from '../../components/headers/AdminHeader';
 import AdminOverview from '../../components/admin/overview/AdminOverview';
 import UserManagement from '../../components/admin/users/UserManagement';
 import InventoryManagement from '../../components/admin/inventory/InventoryManagement';
@@ -20,6 +21,8 @@ export function AdminDashboard({ initialTab = 'overview' }) {
     location.pathname === ROUTES.ADMIN_INVENTORY_CREATE || location.pathname === '/admin/inventory/create';
 
   const [tabState, setTabState] = useState(initialTab);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const isSuperAdmin = role === ROLES.SUPER_ADMIN;
 
   // Derive currentTab reactively without triggering cascading renders in useEffect
@@ -41,31 +44,26 @@ export function AdminDashboard({ initialTab = 'overview' }) {
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background: '#ffffff' }}>
-      {/* Sidebar Navigation */}
-      <Sidebar currentTab={currentTab} onTabChange={handleTabChange} />
+    <div className="min-h-screen flex flex-col bg-white">
+      {/* Top Header matching reference image: Actions, Logo, Search, and Profile Photo on right */}
+      <AdminHeader
+        onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}
+        isSidebarCollapsed={isSidebarCollapsed}
+        onNavigate={handleTabChange}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        {/* Topbar */}
-        <header
-          style={{
-            background: 'linear-gradient(135deg, #ea6c00 0%, #f97316 50%, #fb923c 100%)',
-          }}
-          className="sticky top-0 z-30 px-6 py-4 flex items-center justify-between shadow-md"
-        >
-          <div>
-            <p className="text-xs text-orange-100">
-              Selamat datang,{' '}
-              <strong className="text-white">{user?.name}</strong> — Sistem Manajemen Bite Ledger
-            </p>
-          </div>
-          <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-white/20 text-white border border-white/30 backdrop-blur-xs">
-            {isSuperAdmin ? 'Super Admin' : 'Store Manager (Admin)'}
-          </span>
-        </header>
+      <div className="flex-1 flex min-w-0">
+        {/* Sidebar Navigation */}
+        <Sidebar
+          currentTab={currentTab}
+          onTabChange={handleTabChange}
+          isCollapsed={isSidebarCollapsed}
+        />
 
-        <main className="flex-1 bg-gray-50/50 min-h-[calc(100vh-65px)]">
+        {/* Main Content Area */}
+        <main className="flex-1 flex flex-col min-w-0 bg-gray-50/50 min-h-[calc(100vh-64px)] overflow-y-auto">
           {currentTab === 'overview' && (
             <AdminOverview onNavigate={handleTabChange} />
           )}
