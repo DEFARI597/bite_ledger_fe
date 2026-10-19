@@ -1,16 +1,16 @@
-import React from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { ROLES, PERMISSIONS } from '../../../constants/roles';
 import {
   Package,
   Boxes,
+  Truck,
   FileBarChart,
   Users,
   ArrowRight,
 } from 'lucide-react';
 
 export function AdminOverview({ onNavigate }) {
-  const { user, role, hasPerm } = useAuth();
+  const { role, hasPerm } = useAuth();
   const isSuperAdmin = role === ROLES.SUPER_ADMIN;
 
   const operationalModules = [
@@ -29,6 +29,14 @@ export function AdminOverview({ onNavigate }) {
       icon: Boxes,
       allowed: hasPerm(PERMISSIONS.INVENTORY_VIEW),
       color: 'border-amber-200 bg-amber-50/50 text-amber-600',
+    },
+    {
+      id: 'vendors',
+      title: 'Vendor & Pemasok',
+      description: 'Kelola data mitra pemasok bahan mentah, kontak person, telepon, dan alamat logistik.',
+      icon: Truck,
+      allowed: hasPerm(PERMISSIONS.INVENTORY_VIEW),
+      color: 'border-blue-200 bg-blue-50/50 text-blue-600',
     },
     {
       id: 'reports',

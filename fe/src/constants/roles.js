@@ -29,6 +29,9 @@ export const ROUTES = {
   LOGIN: '/login',
   CASHIER: '/',
   ADMIN: '/admin',
+  ADMIN_INVENTORY_CREATE: '/admin/inventory/create',
+  ADMIN_VENDORS: '/admin/vendors',
+  ADMIN_VENDORS_CREATE: '/admin/vendors/create',
   KITCHEN: '/kitchen',
   UNAUTHORIZED: '/unauthorized',
 };

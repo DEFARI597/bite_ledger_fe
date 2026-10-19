@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <mask id="favicon-fork">
+    <!-- Area putih untuk menampilkan bentuk -->
+    <rect width="160" height="160" fill="#ffffff" />
+    
+    <!-- Siluet garpu hitam untuk membuat potongan tembus pandang -->
+    <g fill="#000000" transform="rotate(-18 78 84)">
+      <!-- 3 Gigi Garpu -->
+      <rect x="63" y="22" width="5" height="30" rx="2.5" />
+      <rect x="75.5" y="22" width="5" height="30" rx="2.5" />
+      <rect x="88" y="22" width="5" height="30" rx="2.5" />
+
+      <!-- Badan & Gagang Garpu -->
+      <path d="M 63 48 C 63 64 68 68 73.5 71 L 73.5 142 C 73.5 145 75.5 147 78 147 C 80.5 147 82.5 145 82.5 142 L 82.5 71 C 88 68 93 64 93 48 Z" />
+    </g>
+  </mask>
+
+  <!-- Simbol Huruf B Oranye -->
+  <path fill="#FF7A1A" mask="url(#favicon-fork)" d="
+    M 22 10
+    C 15.373 10 10 15.373 10 22
+    L 10 138
+    C 10 144.627 15.373 150 22 150
+    L 76 150
+    C 109 150 134 125 134 95
+    C 134 85.5 131.5 76.5 126 69
+    C 129.5 63 132 55 132 46
+    C 132 22 111 10 80 10
+    Z
+  " />
+</svg>

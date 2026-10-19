@@ -1,8 +1,8 @@
-import React from 'react';
 import {
   LayoutDashboard,
   Package,
   Boxes,
+  Truck,
   FileBarChart,
   Users,
   UtensilsCrossed,
@@ -71,6 +71,12 @@ export function Sidebar({ currentTab = 'overview', onTabChange, variant }) {
       id: 'inventory',
       label: 'Inventori Bahan Baku',
       icon: Boxes,
+      allowed: hasPerm(PERMISSIONS.INVENTORY_VIEW),
+    },
+    {
+      id: 'vendors',
+      label: 'Vendor & Pemasok',
+      icon: Truck,
       allowed: hasPerm(PERMISSIONS.INVENTORY_VIEW),
     },
     {

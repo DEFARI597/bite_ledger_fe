@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 180" width="100%" height="100%">
+  <!-- Icon Mark: Huruf B dengan Siluet Garpu -->
+  <g id="logo-mark">
+    <mask id="fork-cutout">
+      <!-- Bidang dasar putih agar seluruh logo tampak -->
+      <rect width="180" height="180" fill="#ffffff" />
+      
+      <!-- Siluet garpu warna hitam untuk membuat efek lubang tembus pandang -->
+      <g fill="#000000" transform="rotate(-18 68 94)">
+        <!-- 3 Gigi Garpu -->
+        <rect x="53" y="32" width="5" height="30" rx="2.5" />
+        <rect x="65.5" y="32" width="5" height="30" rx="2.5" />
+        <rect x="78" y="32" width="5" height="30" rx="2.5" />
+
+        <!-- Leher & Gagang Garpu -->
+        <path d="M 53 58 C 53 74 58 78 63.5 81 L 63.5 152 C 63.5 155 65.5 157 68 157 C 70.5 157 72.5 155 72.5 152 L 72.5 81 C 78 78 83 74 83 58 Z" />
+      </g>
+    </mask>
+
+    <!-- Huruf B Oranye -->
+    <path fill="#FF7A1A" mask="url(#fork-cutout)" d="
+      M 32 20
+      C 25.373 20 20 25.373 20 32
+      L 20 148
+      C 20 154.627 25.373 160 32 160
+      L 86 160
+      C 119 160 144 135 144 105
+      C 144 95.5 141.5 86.5 136 79
+      C 139.5 73 142 65 142 56
+      C 142 32 121 20 90 20
+      Z
+    " />
+  </g>
+
+  <!-- Wordmark: BiteLedger -->
+  <text x="175" y="116" fill="#252525" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="76" font-weight="700" letter-spacing="-1.5">BiteLedger</text>
+</svg>
