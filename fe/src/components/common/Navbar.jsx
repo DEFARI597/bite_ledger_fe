@@ -82,6 +82,14 @@ export function Navbar({ title = 'Bite Ledger', subtitle = 'POS & Operation Suit
                 </div>
                 <div className="text-[11px] text-orange-100 leading-tight">{user.email}</div>
               </div>
+              <img
+                src={user.avatar || user.photo || '/default-avatar.svg'}
+                alt={user.name}
+                className="w-8 h-8 rounded-full object-cover ring-2 ring-white/60 shadow-xs"
+                onError={(e) => {
+                  e.currentTarget.src = '/default-avatar.svg';
+                }}
+              />
             </div>
           )}
 

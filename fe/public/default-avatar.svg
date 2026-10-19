@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="avatar-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdba74" />
+      <stop offset="50%" stop-color="#fb923c" />
+      <stop offset="100%" stop-color="#ea580c" />
+    </linearGradient>
+    <linearGradient id="hair-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="58" fill="url(#avatar-bg)" />
+
+  <!-- Body / Torso with cyan blouse like reference -->
+  <path d="M22 112 C22 84, 40 76, 60 76 C80 76, 98 84, 98 112 Z" fill="#06b6d4" />
+  <!-- V-neck detail -->
+  <polygon points="60,86 52,76 68,76" fill="#fde047" opacity="0.4" />
+
+  <!-- Neck -->
+  <rect x="52" y="62" width="16" height="18" rx="4" fill="#fed7aa" />
+
+  <!-- Head -->
+  <ellipse cx="60" cy="48" rx="20" ry="22" fill="#fed7aa" />
+
+  <!-- Blonde hair styled like reference -->
+  <path d="M38 46 C36 28, 48 18, 60 18 C72 18, 84 28, 82 46 C80 34, 76 26, 60 26 C44 26, 40 34, 38 46 Z" fill="url(#hair-grad)" />
+  <path d="M37 42 C35 34, 42 22, 58 20 C64 20, 78 22, 83 38 C76 30, 68 28, 54 28 C44 28, 38 34, 37 42 Z" fill="#d97706" />
+
+  <!-- Glasses matching reference -->
+  <!-- Left lens -->
+  <rect x="44" y="44" width="12" height="9" rx="2.5" fill="none" stroke="#1f2937" stroke-width="2" />
+  <!-- Right lens -->
+  <rect x="64" y="44" width="12" height="9" rx="2.5" fill="none" stroke="#1f2937" stroke-width="2" />
+  <!-- Bridge -->
+  <line x1="56" y1="48" x2="64" y2="48" stroke="#1f2937" stroke-width="2" />
+  <!-- Temples -->
+  <line x1="39" y1="46" x2="44" y2="46" stroke="#1f2937" stroke-width="2" />
+  <line x1="76" y1="46" x2="81" y2="46" stroke="#1f2937" stroke-width="2" />
+
+  <!-- Eyes behind glasses -->
+  <circle cx="50" cy="48.5" r="1.8" fill="#1f2937" />
+  <circle cx="70" cy="48.5" r="1.8" fill="#1f2937" />
+
+  <!-- Smile with red/pink lipstick -->
+  <path d="M53 58 Q60 64 67 58" fill="none" stroke="#e11d48" stroke-width="2" stroke-linecap="round" />
+</svg>
