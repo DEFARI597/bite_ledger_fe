@@ -29,6 +29,8 @@ export const ROUTES = {
   LOGIN: '/login',
   CASHIER: '/',
   ADMIN: '/admin',
+  ADMIN_PRODUCTS: '/admin/products',
+  ADMIN_PRODUCTS_CREATE: '/admin/products/create',
   ADMIN_INVENTORY_CREATE: '/admin/inventory/create',
   ADMIN_VENDORS: '/admin/vendors',
   ADMIN_VENDORS_CREATE: '/admin/vendors/create',

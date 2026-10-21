@@ -59,6 +59,22 @@ export function App() {
             }
           />
           <Route
+            path={ROUTES.ADMIN_PRODUCTS}
+            element={
+              <ProtectedRoute allowedRoles={[ROLES.ADMIN, ROLES.SUPER_ADMIN]}>
+                <AdminDashboard initialTab="products" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.ADMIN_PRODUCTS_CREATE}
+            element={
+              <ProtectedRoute allowedRoles={[ROLES.ADMIN, ROLES.SUPER_ADMIN]}>
+                <AdminDashboard initialTab="products" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path={ROUTES.ADMIN_INVENTORY_CREATE}
             element={
               <ProtectedRoute allowedRoles={[ROLES.ADMIN, ROLES.SUPER_ADMIN]}>

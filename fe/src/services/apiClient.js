@@ -21,11 +21,17 @@ class ApiClient {
     const url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
     const token = this.getToken();
 
+    const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+
     const headers = {
-      'Content-Type': 'application/json',
       Accept: 'application/json',
       ...options.headers,
     };
+
+    // Only set application/json if not sending FormData (browser automatically sets boundary for FormData)
+    if (!isFormData && !headers['Content-Type']) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     if (token && !headers.Authorization) {
       headers.Authorization = `Bearer ${token}`;
@@ -79,26 +85,29 @@ class ApiClient {
   }
 
   post(endpoint, body = {}, headers = {}) {
+    const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
     return this.request(endpoint, {
       method: 'POST',
       headers,
-      body: JSON.stringify(body),
+      body: isFormData ? body : JSON.stringify(body),
     });
   }
 
   patch(endpoint, body = {}, headers = {}) {
+    const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
     return this.request(endpoint, {
       method: 'PATCH',
       headers,
-      body: JSON.stringify(body),
+      body: isFormData ? body : JSON.stringify(body),
     });
   }
 
   put(endpoint, body = {}, headers = {}) {
+    const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
     return this.request(endpoint, {
       method: 'PUT',
       headers,
-      body: JSON.stringify(body),
+      body: isFormData ? body : JSON.stringify(body),
     });
   }
 
