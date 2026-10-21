@@ -8,6 +8,7 @@ import {
   CookingPot,
   Flame,
   Clock,
+  ChefHat,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { ROLES, PERMISSIONS } from '../../constants/roles';
@@ -58,6 +59,12 @@ export function Sidebar({ currentTab = 'overview', onTabChange, variant, isColla
       label: 'Katalog Produk & Menu',
       icon: Package,
       allowed: hasPerm(PERMISSIONS.PRODUCTS_VIEW),
+    },
+    {
+      id: 'recipes',
+      label: 'Resep Menu & BOM',
+      icon: ChefHat,
+      allowed: role === ROLES.ADMIN || role === ROLES.SUPER_ADMIN,
     },
     {
       id: 'inventory',
@@ -125,13 +132,13 @@ export function Sidebar({ currentTab = 'overview', onTabChange, variant, isColla
                     boxShadow: isActive ? '0 2px 8px rgba(234, 108, 0, 0.25)' : 'none',
                     fontWeight: isActive ? '600' : '500',
                   }}
-                  onMouseEnter={e => {
+                  onMouseEnter={(e) => {
                     if (!isActive) {
                       e.currentTarget.style.background = '#fff7ed';
                       e.currentTarget.style.color = '#ea580c';
                     }
                   }}
-                  onMouseLeave={e => {
+                  onMouseLeave={(e) => {
                     if (!isActive) {
                       e.currentTarget.style.background = 'transparent';
                       e.currentTarget.style.color = '#6b7280';

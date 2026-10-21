@@ -8,6 +8,8 @@ import AdminOverview from '../../components/admin/overview/AdminOverview';
 import UserManagement from '../../components/admin/users/UserManagement';
 import InventoryManagement from '../../components/admin/inventory/InventoryManagement';
 import VendorManagement from '../../components/admin/vendors/VendorManagement';
+import RecipeManagement from '../../components/admin/recipes/RecipeManagement';
+import ProductManagement from '../../components/admin/products/ProductManagement';
 import { Package } from 'lucide-react';
 
 export function AdminDashboard({ initialTab = 'overview' }) {
@@ -19,26 +21,43 @@ export function AdminDashboard({ initialTab = 'overview' }) {
     location.pathname === ROUTES.ADMIN_VENDORS || location.pathname === '/admin/vendors';
   const isCreateInventoryRoute =
     location.pathname === ROUTES.ADMIN_INVENTORY_CREATE || location.pathname === '/admin/inventory/create';
+  const isProductsRoute =
+    location.pathname === ROUTES.ADMIN_PRODUCTS || location.pathname === '/admin/products';
+  const isCreateProductRoute =
+    location.pathname === ROUTES.ADMIN_PRODUCTS_CREATE || location.pathname === '/admin/products/create';
 
   const [tabState, setTabState] = useState(initialTab);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const isSuperAdmin = role === ROLES.SUPER_ADMIN;
+  const isAdminOrSuperAdmin = role === ROLES.ADMIN || role === ROLES.SUPER_ADMIN;
 
   // Derive currentTab reactively without triggering cascading renders in useEffect
   const currentTab = isVendorsRoute
     ? 'vendors'
     : isCreateInventoryRoute
       ? 'inventory'
-      : tabState === 'users' && !isSuperAdmin
-        ? 'overview'
-        : tabState;
+      : isProductsRoute || isCreateProductRoute
+        ? 'products'
+        : tabState === 'users' && !isSuperAdmin
+          ? 'overview'
+          : tabState === 'recipes' && !isAdminOrSuperAdmin
+            ? 'overview'
+            : tabState;
 
   const handleTabChange = (tabId) => {
-    if ((isCreateInventoryRoute || isVendorsRoute) && tabId !== (isVendorsRoute ? 'vendors' : 'inventory')) {
+    const isSpecialSubRoute =
+      isCreateInventoryRoute || isVendorsRoute || isProductsRoute || isCreateProductRoute;
+
+    if (
+      isSpecialSubRoute &&
+      tabId !== (isVendorsRoute ? 'vendors' : isCreateInventoryRoute ? 'inventory' : 'products')
+    ) {
       navigate(ROUTES.ADMIN);
     } else if (tabId === 'vendors' && location.pathname !== ROUTES.ADMIN_VENDORS) {
       navigate(ROUTES.ADMIN_VENDORS);
+    } else if (tabId === 'products' && location.pathname !== ROUTES.ADMIN_PRODUCTS && !isCreateProductRoute) {
+      navigate(ROUTES.ADMIN_PRODUCTS);
     }
     setTabState(tabId);
   };
@@ -68,6 +87,14 @@ export function AdminDashboard({ initialTab = 'overview' }) {
             <AdminOverview onNavigate={handleTabChange} />
           )}
 
+          {currentTab === 'products' && (
+            <ProductManagement isCreateRoute={isCreateProductRoute} />
+          )}
+
+          {currentTab === 'recipes' && isAdminOrSuperAdmin && (
+            <RecipeManagement />
+          )}
+
           {currentTab === 'inventory' && (
             <InventoryManagement />
           )}
@@ -80,26 +107,31 @@ export function AdminDashboard({ initialTab = 'overview' }) {
             <UserManagement />
           )}
 
-          {currentTab !== 'overview' && currentTab !== 'users' && currentTab !== 'inventory' && currentTab !== 'vendors' && (
-            <div className="p-8 max-w-xl mx-auto text-center py-24">
-              <div className="w-14 h-14 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mx-auto mb-4 border border-orange-200">
-                <Package className="w-7 h-7" />
+          {currentTab !== 'overview' &&
+            currentTab !== 'products' &&
+            currentTab !== 'recipes' &&
+            currentTab !== 'users' &&
+            currentTab !== 'inventory' &&
+            currentTab !== 'vendors' && (
+              <div className="p-8 max-w-xl mx-auto text-center py-24">
+                <div className="w-14 h-14 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mx-auto mb-4 border border-orange-200">
+                  <Package className="w-7 h-7" />
+                </div>
+                <h2 className="text-lg font-bold text-gray-900 mb-1">
+                  Modul Laporan Keuangan
+                </h2>
+                <p className="text-xs text-gray-500 mb-6 leading-relaxed">
+                  Antarmuka modul ini sedang dalam proses pengembangan dan akan segera siap digunakan.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => handleTabChange('overview')}
+                  className="px-4 py-2 bg-orange-600 text-white rounded-xl text-xs font-semibold hover:bg-orange-700 transition-all cursor-pointer"
+                >
+                  Kembali ke Ringkasan
+                </button>
               </div>
-              <h2 className="text-lg font-bold text-gray-900 mb-1">
-                Modul {currentTab === 'products' ? 'Katalog Produk & Menu' : 'Laporan Keuangan'}
-              </h2>
-              <p className="text-xs text-gray-500 mb-6 leading-relaxed">
-                Antarmuka modul ini sedang dalam proses pengembangan dan akan segera siap digunakan.
-              </p>
-              <button
-                type="button"
-                onClick={() => handleTabChange('overview')}
-                className="px-4 py-2 bg-orange-600 text-white rounded-xl text-xs font-semibold hover:bg-orange-700 transition-all cursor-pointer"
-              >
-                Kembali ke Ringkasan
-              </button>
-            </div>
-          )}
+            )}
         </main>
       </div>
     </div>
