@@ -38,12 +38,6 @@ export function Sidebar({ currentTab = 'overview', onTabChange, variant, isColla
       allowed: hasPerm(PERMISSIONS.INVENTORY_VIEW) || isKitchenMode,
     },
     {
-      id: 'recipes',
-      label: 'Katalog Menu & Resep',
-      icon: Package,
-      allowed: hasPerm(PERMISSIONS.PRODUCTS_VIEW) || isKitchenMode,
-    },
-    {
       id: 'history',
       label: 'Riwayat Selesai',
       icon: Clock,
