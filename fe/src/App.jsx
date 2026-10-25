@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { PosCartProvider } from './context/PosCartContext';
 import { ROLES, ROUTES } from './constants/roles';
 
 // Guards
@@ -9,6 +10,7 @@ import GuestRoute from './components/guards/GuestRoute';
 // Pages
 import LoginPage from './pages/auth/LoginPage';
 import CashierDashboard from './pages/cashier/CashierDashboard';
+import CashierPaymentPage from './pages/cashier/CashierPaymentPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import KitchenDashboard from './pages/kitchen/KitchenDashboard';
 import UnauthorizedPage from './pages/error/UnauthorizedPage';
@@ -18,7 +20,8 @@ export function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
+        <PosCartProvider>
+          <Routes>
           {/* Public / Guest-only Route (Login Form) */}
           <Route
             path={ROUTES.LOGIN}
@@ -35,6 +38,16 @@ export function App() {
             element={
               <ProtectedRoute allowedRoles={[ROLES.CASHIER, ROLES.ADMIN, ROLES.SUPER_ADMIN]}>
                 <CashierDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Operational POS Payment Route: Accessible by Cashier, Admin, and Super Admin */}
+          <Route
+            path={ROUTES.CASHIER_PAYMENT}
+            element={
+              <ProtectedRoute allowedRoles={[ROLES.CASHIER, ROLES.ADMIN, ROLES.SUPER_ADMIN]}>
+                <CashierPaymentPage />
               </ProtectedRoute>
             }
           />
@@ -103,6 +116,7 @@ export function App() {
           <Route path={ROUTES.UNAUTHORIZED} element={<UnauthorizedPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+        </PosCartProvider>
       </AuthProvider>
     </BrowserRouter>
   );

@@ -28,6 +28,7 @@ export const PERMISSIONS = {
 export const ROUTES = {
   LOGIN: '/login',
   CASHIER: '/',
+  CASHIER_PAYMENT: '/payment',
   ADMIN: '/admin',
   ADMIN_PRODUCTS: '/admin/products',
   ADMIN_PRODUCTS_CREATE: '/admin/products/create',
