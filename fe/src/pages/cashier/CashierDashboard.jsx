@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { usePosCart } from '../../context/PosCartContext';
 import CashierHeader from '../../components/headers/CashierHeader';
 import PosProductCard from '../../components/cashier/PosProductCard';
 import PosCategoryFilter from '../../components/cashier/PosCategoryFilter';
+import PosBottomCartBar from '../../components/cashier/PosBottomCartBar';
 import productService from '../../services/productService';
 import { AlertTriangle, Search, RefreshCw, UtensilsCrossed, X } from 'lucide-react';
 
 export function CashierDashboard() {
   const { user, role } = useAuth();
+  const { addToCart, updateQuantity, getItemQuantity, totalQuantity } = usePosCart();
   const location = useLocation();
   const redirectAlert = location.state?.alert;
   const [products, setProducts] = useState([]);
@@ -74,9 +77,19 @@ export function CashierDashboard() {
     });
   }, [products, selectedCategory, searchQuery]);
 
-  const handleSelectProduct = (product) => {
-    console.log('Selected product:', product);
-  };
+  const handleSelectProduct = useCallback(
+    (product) => {
+      addToCart(product);
+    },
+    [addToCart]
+  );
+
+  const handleDecrementProduct = useCallback(
+    (product) => {
+      updateQuantity(product.id, -1);
+    },
+    [updateQuantity]
+  );
 
   const handleResetFilters = () => {
     setSelectedCategory('ALL');
@@ -84,14 +97,17 @@ export function CashierDashboard() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50/50">
+    <div className="min-h-screen flex flex-col bg-gray-50/50 relative">
       {/* Top Header tailored for Cashier / POS role */}
       <CashierHeader
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <main
+        className={`flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 transition-all duration-200 ${totalQuantity > 0 ? 'pb-32' : 'pb-12'
+          }`}
+      >
         {/* Guard Redirect Alert if any */}
         {redirectAlert && (
           <div className="p-4 rounded-xl border-2 border-red-200 bg-red-50 text-red-700 text-xs sm:text-sm flex items-start gap-3 shadow-sm">
@@ -194,11 +210,15 @@ export function CashierDashboard() {
                 key={product.id}
                 product={product}
                 onSelect={handleSelectProduct}
+                onDecrement={handleDecrementProduct}
+                cartQuantity={getItemQuantity(product.id)}
               />
             ))}
           </div>
         )}
       </main>
+
+      <PosBottomCartBar />
     </div>
   );
 }

@@ -1,8 +1,13 @@
-import { useState, useEffect } from 'react';
-import { Package, Plus } from 'lucide-react';
+import React, { useState, useEffect, memo } from 'react';
+import { Package, Plus, Minus } from 'lucide-react';
 import { getProductImageUrl } from '../../utils/image.util';
 
-export function PosProductCard({ product, onSelect }) {
+export const PosProductCard = memo(function PosProductCard({
+  product,
+  onSelect,
+  onDecrement,
+  cartQuantity = 0,
+}) {
   const [imgError, setImgError] = useState(false);
   const imageUrl = getProductImageUrl(product.imageUrl);
 
@@ -22,13 +27,19 @@ export function PosProductCard({ product, onSelect }) {
   return (
     <div
       onClick={() => onSelect?.(product)}
-      className="bg-white rounded-2xl border border-gray-200/90 hover:border-orange-300 hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col group cursor-pointer shadow-2xs select-none"
+      className={`bg-white rounded-2xl border transition-all duration-200 overflow-hidden flex flex-col group cursor-pointer shadow-2xs select-none relative ${
+        cartQuantity > 0
+          ? 'border-orange-500 ring-2 ring-orange-500/20 shadow-md'
+          : 'border-gray-200/90 hover:border-orange-300 hover:shadow-md'
+      }`}
     >
       <div className="relative w-full aspect-square bg-orange-50/50 overflow-hidden flex items-center justify-center">
         {imageUrl && !imgError ? (
           <img
             src={imageUrl}
             alt={product.name}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             onError={() => setImgError(true)}
           />
@@ -60,17 +71,56 @@ export function PosProductCard({ product, onSelect }) {
             </p>
           </div>
 
-          <button
-            type="button"
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-orange-50 text-orange-600 group-hover:bg-orange-600 group-hover:text-white flex items-center justify-center transition-all shadow-2xs cursor-pointer shrink-0"
-            title={`Pilih ${product.name}`}
-          >
-            <Plus className="w-4.5 h-4.5" />
-          </button>
+          {cartQuantity > 0 ? (
+            <div
+              className="flex items-center bg-orange-50/90 border border-orange-200/90 rounded-xl p-1 gap-1 shadow-2xs"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDecrement?.(product);
+                }}
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white text-orange-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200 border border-orange-100 flex items-center justify-center transition-all shadow-2xs cursor-pointer active:scale-95 shrink-0"
+                title={`Kurangi 1 ${product.name}`}
+              >
+                <Minus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </button>
+
+              <span className="min-w-6 text-center font-black text-xs sm:text-sm text-gray-900 px-1 select-none">
+                {cartQuantity}
+              </span>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect?.(product);
+                }}
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-orange-600 text-white hover:bg-orange-700 flex items-center justify-center transition-all shadow-2xs cursor-pointer active:scale-95 shrink-0"
+                title={`Tambah 1 ${product.name}`}
+              >
+                <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect?.(product);
+              }}
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-orange-50 text-orange-600 group-hover:bg-orange-600 group-hover:text-white flex items-center justify-center transition-all shadow-2xs cursor-pointer shrink-0"
+              title={`Pilih ${product.name}`}
+            >
+              <Plus className="w-4.5 h-4.5" />
+            </button>
+          )}
         </div>
       </div>
     </div>
   );
-}
+});
 
 export default PosProductCard;
