@@ -2,17 +2,19 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Menu,
-  MessageSquare,
   Mail,
   Search,
   LogOut,
   Check,
   ShoppingBag,
   CookingPot,
-  Bell,
+  AlertTriangle,
+  CheckCircle2,
+  RefreshCw,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { ROLES, ROUTES } from '../../constants/roles';
+import NotificationDropdown from './NotificationDropdown';
 
 // Pixel-perfect SVG Flags for language switcher
 function USFlag({ className = 'w-5 h-3.5' }) {
@@ -48,6 +50,7 @@ function IDFlag({ className = 'w-5 h-3.5' }) {
 export function AdminHeader({
   onToggleSidebar,
   isSidebarCollapsed = false,
+  onCollapseSidebar,
   onNavigate,
   searchQuery = '',
   onSearchChange,
@@ -72,16 +75,12 @@ export function AdminHeader({
   const avatarUrl = user?.avatar || user?.photo || '/default-avatar.svg';
 
   // Dropdown refs for click-outside dismissal
-  const messagesRef = useRef(null);
   const mailRef = useRef(null);
   const profileRef = useRef(null);
   const languageRef = useRef(null);
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (messagesRef.current && !messagesRef.current.contains(event.target)) {
-        setIsMessagesOpen(false);
-      }
       if (mailRef.current && !mailRef.current.contains(event.target)) {
         setIsMailOpen(false);
       }
@@ -131,66 +130,60 @@ export function AdminHeader({
               <Menu className="w-5 h-5 stroke-[2.2]" />
             </button>
 
-            {/* 2. Chat / Comments with Glowing Red Dot */}
-            <div className="relative" ref={messagesRef}>
-              <button
-                type="button"
-                onClick={() => {
-                  setIsMessagesOpen((prev) => !prev);
-                  setIsMailOpen(false);
-                  setIsProfileOpen(false);
-                  setIsLanguageOpen(false);
-                }}
-                className={`relative p-2 rounded-xl transition-all cursor-pointer ${isMessagesOpen
-                  ? 'text-orange-600 bg-orange-50'
-                  : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
-                title="Pesan & Notifikasi Pesanan"
-              >
-                <MessageSquare className="w-5 h-5 stroke-[2]" />
-                <span className="absolute top-1.5 right-1.5 flex h-2.5 w-2.5 pointer-events-none">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border border-white"></span>
-                </span>
-              </button>
-
-              {/* Chat / Notifications Popover */}
-              {isMessagesOpen && (
-                <div className="absolute left-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-gray-100 py-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                  <div className="px-4 py-2 border-b border-gray-100 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Bell className="w-4 h-4 text-orange-500" />
-                      <span className="font-semibold text-gray-900 text-sm">Notifikasi & Aktivitas</span>
-                    </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200">
-                      3 Baru
-                    </span>
-                  </div>
-                  <div className="py-8 px-4 text-center">
-                    <p className="text-xs font-medium text-gray-500">Fitur ini sedang dalam perkembangan</p>
-                  </div>
-                  <div className="px-4 pt-2 border-t border-gray-100 text-center">
-                    <button
-                      type="button"
-                      onClick={() => setIsMessagesOpen(false)}
-                      className="text-xs font-semibold text-orange-600 hover:text-orange-700 cursor-pointer"
-                    >
-                      Tutup Notifikasi
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+            <NotificationDropdown
+              isOpen={isMessagesOpen}
+              onToggle={() => {
+                setIsMessagesOpen((prev) => {
+                  const next = !prev;
+                  if (next) {
+                    setIsMailOpen(false);
+                    setIsProfileOpen(false);
+                    setIsLanguageOpen(false);
+                    if (!isSidebarCollapsed) {
+                      if (onCollapseSidebar) {
+                        onCollapseSidebar();
+                      } else if (onToggleSidebar) {
+                        onToggleSidebar();
+                      }
+                    }
+                  }
+                  return next;
+                });
+              }}
+              onClose={() => setIsMessagesOpen(false)}
+              onNavigate={(tab) => {
+                if (!isSidebarCollapsed) {
+                  if (onCollapseSidebar) {
+                    onCollapseSidebar();
+                  } else if (onToggleSidebar) {
+                    onToggleSidebar();
+                  }
+                }
+                if (onNavigate) onNavigate(tab);
+              }}
+            />
 
             {/* 3. Mail / Inquiries with Glowing Red Dot */}
             <div className="relative" ref={mailRef}>
               <button
                 type="button"
                 onClick={() => {
-                  setIsMailOpen((prev) => !prev);
-                  setIsMessagesOpen(false);
-                  setIsProfileOpen(false);
-                  setIsLanguageOpen(false);
+                  setIsMailOpen((prev) => {
+                    const next = !prev;
+                    if (next) {
+                      setIsMessagesOpen(false);
+                      setIsProfileOpen(false);
+                      setIsLanguageOpen(false);
+                      if (!isSidebarCollapsed) {
+                        if (onCollapseSidebar) {
+                          onCollapseSidebar();
+                        } else if (onToggleSidebar) {
+                          onToggleSidebar();
+                        }
+                      }
+                    }
+                    return next;
+                  });
                 }}
                 className={`relative p-2 rounded-xl transition-all cursor-pointer ${isMailOpen
                   ? 'text-orange-600 bg-orange-50'

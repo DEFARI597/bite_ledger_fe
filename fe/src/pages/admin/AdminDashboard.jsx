@@ -67,6 +67,7 @@ export function AdminDashboard({ initialTab = 'overview' }) {
       {/* Top Header matching reference image: Actions, Logo, Search, and Profile Photo on right */}
       <AdminHeader
         onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}
+        onCollapseSidebar={() => setIsSidebarCollapsed(true)}
         isSidebarCollapsed={isSidebarCollapsed}
         onNavigate={handleTabChange}
         searchQuery={searchQuery}
