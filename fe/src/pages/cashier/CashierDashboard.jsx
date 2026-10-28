@@ -39,25 +39,46 @@ export function CashierDashboard() {
     fetchProducts();
   }, [fetchProducts]);
 
-  const { categories, categoryCounts } = useMemo(() => {
+  const isProductOutOfStock = useCallback((p) => {
+    if (p.isActive === false) return true;
+    if (p.isOutOfStock) return true;
+    if (p.recipe?.items && p.recipe.items.length > 0) {
+      const hasEmpty = p.recipe.items.some((i) => i.stock !== undefined && i.stock < i.quantityRequired);
+      const hasLow = p.recipe.items.some((i) => i.stock !== undefined && i.minStockAlert !== undefined && i.stock <= i.minStockAlert);
+      return hasEmpty || hasLow;
+    }
+    return false;
+  }, []);
+
+  const { categories, categoryCounts, outOfStockCount } = useMemo(() => {
     const counts = {};
     const catSet = new Set();
+    let oosCount = 0;
 
     products.forEach((p) => {
       const cat = p.category ? p.category.trim() : 'Lainnya';
       catSet.add(cat);
       counts[cat] = (counts[cat] || 0) + 1;
+
+      if (isProductOutOfStock(p)) {
+        oosCount += 1;
+      }
     });
 
     return {
       categories: Array.from(catSet).sort(),
       categoryCounts: counts,
+      outOfStockCount: oosCount,
     };
-  }, [products]);
+  }, [products, isProductOutOfStock]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
-      if (selectedCategory !== 'ALL') {
+      if (selectedCategory === 'OUT_OF_STOCK') {
+        if (!isProductOutOfStock(p)) {
+          return false;
+        }
+      } else if (selectedCategory !== 'ALL') {
         const pCat = (p.category || '').toLowerCase();
         if (pCat !== selectedCategory.toLowerCase()) {
           return false;
@@ -75,13 +96,16 @@ export function CashierDashboard() {
 
       return true;
     });
-  }, [products, selectedCategory, searchQuery]);
+  }, [products, selectedCategory, searchQuery, isProductOutOfStock]);
 
   const handleSelectProduct = useCallback(
     (product) => {
+      if (isProductOutOfStock(product)) {
+        return;
+      }
       addToCart(product);
     },
-    [addToCart]
+    [addToCart, isProductOutOfStock]
   );
 
   const handleDecrementProduct = useCallback(
@@ -105,8 +129,9 @@ export function CashierDashboard() {
       />
 
       <main
-        className={`flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 transition-all duration-200 ${totalQuantity > 0 ? 'pb-32' : 'pb-12'
-          }`}
+        className={`flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 transition-all duration-200 ${
+          totalQuantity > 0 ? 'pb-32' : 'pb-12'
+        }`}
       >
         {/* Guard Redirect Alert if any */}
         {redirectAlert && (
@@ -143,6 +168,7 @@ export function CashierDashboard() {
             onSelectCategory={setSelectedCategory}
             categoryCounts={categoryCounts}
             totalCount={products.length}
+            outOfStockCount={outOfStockCount}
           />
 
           {searchQuery && (
